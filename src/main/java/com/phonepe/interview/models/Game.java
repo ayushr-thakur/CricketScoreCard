@@ -1,12 +1,13 @@
 package com.phonepe.interview.models;
 
-import java.util.Scanner;
+import com.phonepe.interview.service.InputService;
 
 public class Game {
     private final Integer playerLimit;
     private final Integer overLimit;
     private final Team team1 = new Team("Team 1");
     private final Team team2 = new Team("Team 2");
+    private final InputService inputService = new InputService();
     private Inning inning1;
     private Inning inning2;
 
@@ -17,8 +18,7 @@ public class Game {
 
     private void initializePlayers(Team team) {
         for (int i = 0; i < this.playerLimit; i++) {
-            Scanner in = new Scanner(System.in);
-            String name = in.nextLine();
+            String name = inputService.getNextString();
             Player player = new Player(name);
             team.addPlayerInBattingOrder(player);
         }

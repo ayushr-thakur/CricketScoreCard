@@ -1,6 +1,6 @@
 package com.phonepe.interview.models;
 
-import java.util.Scanner;
+import com.phonepe.interview.service.InputService;
 
 public class Inning {
     private Player onStrike;
@@ -10,6 +10,7 @@ public class Inning {
     private final Integer target;
     private Integer ballsDelivered = 0;
     private Integer overNumber = 1;
+    private final InputService inputService = new InputService();
 
     public Inning(Team battingTeam, Integer overLimit, Integer target) {
         this.battingTeam = battingTeam;
@@ -60,8 +61,7 @@ public class Inning {
     public void start() {
         System.out.println(String.format("Over %d:", overNumber));
         while (!this.isInningsOver()) {
-            Scanner in = new Scanner(System.in);
-            String deliveryEvent = in.nextLine();
+            String deliveryEvent = inputService.getNextString();
             this.makeInningsProgress(deliveryEvent);
             if (this.isInningsOver() || (ballsDelivered % 6 == 0 && (!deliveryEvent.equals("Wd") && !deliveryEvent.equals("N")))) {
                 this.printInningsProgress();
