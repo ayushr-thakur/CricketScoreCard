@@ -9,7 +9,6 @@ public class Inning {
     private final Integer overLimit;
     private final Integer target;
     private Integer ballsDelivered = 0;
-    private Integer overNumber = 1;
     private final InputService inputService = new InputService();
 
     public Inning(Team battingTeam, Integer overLimit, Integer target) {
@@ -26,31 +25,34 @@ public class Inning {
         onNonStrike = temp;
     }
 
-    private void makeInningsProgress(String deliveryEvent) {
+    private Integer makeInningsProgress(String deliveryEvent) {
         switch (deliveryEvent) {
             case "W":
                 battingTeam.dismissPlayer(onStrike);
                 onStrike = this.battingTeam.sendNextBatsman();
                 ballsDelivered += 1;
-                break;
+                return 1;
             case "Wd":
             case "N":
                 battingTeam.incrementExtras(1);
-                break;
+                return 0;
             case "1":
             case "3":
             case "5":
                 battingTeam.updateScore(Integer.valueOf(deliveryEvent), onStrike);
                 this.changeStrike();
                 ballsDelivered += 1;
-                break;
+                return 1;
             case "0":
             case "2":
             case "4":
             case "6":
                 battingTeam.updateScore(Integer.valueOf(deliveryEvent), onStrike);
                 ballsDelivered += 1;
-                break;
+                return 1;
+            default:
+                System.out.println("Invalid delivery score");
+                return 0;
         }
     }
 
@@ -58,22 +60,25 @@ public class Inning {
         battingTeam.printScoreCard();
     }
 
-    public void start() {
-        System.out.println(String.format("Over %d:", overNumber));
-        while (!this.isInningsOver()) {
+    private void playOneOver(Integer overNumber) {
+        System.out.printf("Over %d:%n", overNumber);
+        int remainingBallsInTheOver = 6;
+        while (remainingBallsInTheOver > 0 && !this.isInningsOver()) {
             String deliveryEvent = inputService.getNextString();
-            this.makeInningsProgress(deliveryEvent);
-            if (this.isInningsOver() || (ballsDelivered % 6 == 0 && (!deliveryEvent.equals("Wd") && !deliveryEvent.equals("N")))) {
-                this.printInningsProgress();
-                this.changeStrike();
-                overNumber++;
-                if (!this.isInningsOver()) System.out.println(String.format("Over %d:", overNumber));
-            }
+            remainingBallsInTheOver -= this.makeInningsProgress(deliveryEvent);
+        }
+        this.printInningsProgress();
+        this.changeStrike();
+    }
+
+    public void start() {
+        for (int overNumber = 1; overNumber <= overLimit && !isInningsOver(); overNumber++) {
+            this.playOneOver(overNumber);
         }
     }
 
     private Boolean isInningsOver() {
-        if (this.target != null && battingTeam.getTotalScore() >= target) return true;
+        if (this.target != null && battingTeam.getTeamScore().getRuns() >= target) return true;
         else if (this.ballsDelivered.equals(6*this.overLimit)) return true;
         else return this.onStrike == null || this.onNonStrike == null;
     }

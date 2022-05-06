@@ -24,24 +24,23 @@ public class Game {
         }
     }
 
-    private void initializeTeam1 () {
+    private void startInning1() {
         System.out.println("Batting Order for Team 1:");
         initializePlayers(this.team1);
         this.inning1 = new Inning(this.team1, this.overLimit, null);
+        this.inning1.start();
     }
 
-    private void initializeTeam2 () {
+    private void startInning2() {
         System.out.println("Batting Order for Team 2:");
         initializePlayers(this.team2);
-        this.inning2 = new Inning(this.team2, this.overLimit, this.team1.getTotalScore()+1);
+        this.inning2 = new Inning(this.team2, this.overLimit, this.team1.getTeamScore().getRuns()+1);
+        this.inning2.start();
     }
 
-
     public void start() {
-        this.initializeTeam1();
-        this.inning1.start();
-        this.initializeTeam2();
-        this.inning2.start();
+        this.startInning1();
+        this.startInning2();
         this.printResult();
     }
 
@@ -49,14 +48,14 @@ public class Game {
         String resultMessage = "Result: %s won the match by %s";
         Team winner;
         String margin;
-        if (team1.getTotalScore() > team2.getTotalScore()) {
+        if (team1.getTeamScore().getRuns() > team2.getTeamScore().getRuns()) {
             winner = team1;
-            margin = String.format("%s runs", team1.getTotalScore() - team2.getTotalScore());
-            System.out.println(String.format(resultMessage, "Team 1", margin));
-        } else if (team1.getTotalScore() < team2.getTotalScore()) {
+            margin = String.format("%s runs", team1.getTeamScore().getRuns() - team2.getTeamScore().getRuns());
+            System.out.println(String.format(resultMessage, winner.getName(), margin));
+        } else if (team1.getTeamScore().getRuns() < team2.getTeamScore().getRuns()) {
             winner = team2;
-            margin = String.format("%s wickets", playerLimit - 1 - team2.getWicketsFallen());
-            System.out.println(String.format(resultMessage, "Team 2", margin));
+            margin = String.format("%s wickets", playerLimit - 1 - team2.getTeamScore().getWickets());
+            System.out.println(String.format(resultMessage, winner.getName(), margin));
         } else {
             System.out.println("Match tied!!");
         }
