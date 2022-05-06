@@ -46,6 +46,10 @@ public class Team {
         this.score.setWickets(this.score.getWickets() + 1);
     }
 
+    public void updateScore(Integer runs) {
+        this.score.setRuns(this.score.getRuns() + runs);
+    }
+
     public void updateScore(Integer runs, Player player) {
         this.score.setRuns(this.score.getRuns() + runs);
         player.updatePlayerScore(runs);

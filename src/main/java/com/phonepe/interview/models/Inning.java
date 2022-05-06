@@ -11,7 +11,6 @@ public class Inning {
     private Integer extras = 0;
     private final Integer target;
     private final InputService inputService = new InputService();
-    private final Score score = new Score(0, 0);
 
     public Inning(Team battingTeam, Integer overLimit, Integer target) {
         this.battingTeam = battingTeam;
@@ -37,6 +36,7 @@ public class Inning {
             case "Wd":
             case "N":
                 extras += 1;
+                battingTeam.updateScore(1);
                 return 0;
             case "1":
             case "3":
@@ -58,13 +58,8 @@ public class Inning {
         }
     }
 
-    private void updateInningsScore() {
-        this.score.setRuns(battingTeam.getTeamScore().getRuns()+extras);
-        this.score.setWickets(battingTeam.getTeamScore().getWickets());
-    }
-
     public Score getInningsScore() {
-        return this.score;
+        return this.battingTeam.getTeamScore();
     }
 
     public void printScoreCard() {
@@ -89,7 +84,6 @@ public class Inning {
         while (remainingBallsInTheOver > 0 && !this.isInningsOver()) {
             String deliveryEvent = inputService.getNextString();
             remainingBallsInTheOver -= this.makeInningsProgress(deliveryEvent);
-            updateInningsScore();
         }
         this.printScoreCard();
         this.changeStrike();
