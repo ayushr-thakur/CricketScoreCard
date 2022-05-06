@@ -34,7 +34,7 @@ public class Game {
     private void startInning2() {
         System.out.println("Batting Order for Team 2:");
         initializePlayers(this.team2);
-        this.inning2 = new Inning(this.team2, this.overLimit, this.team1.getTeamScore().getRuns()+1);
+        this.inning2 = new Inning(this.team2, this.overLimit, this.inning1.getInningsScore().getRuns()+1);
         this.inning2.start();
     }
 
