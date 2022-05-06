@@ -48,14 +48,16 @@ public class Game {
         String resultMessage = "Result: %s won the match by %s";
         Team winner;
         String margin;
-        if (team1.getTeamScore().getRuns() > team2.getTeamScore().getRuns()) {
+        Score team1Score = this.inning1.getInningsScore();
+        Score team2Score = this.inning2.getInningsScore();
+        if (team1Score.getRuns() > team2Score.getRuns()) {
             winner = team1;
-            margin = String.format("%s runs", team1.getTeamScore().getRuns() - team2.getTeamScore().getRuns());
-            System.out.println(String.format(resultMessage, winner.getName(), margin));
-        } else if (team1.getTeamScore().getRuns() < team2.getTeamScore().getRuns()) {
+            margin = String.format("%s runs", team1Score.getRuns() - team2Score.getRuns());
+            System.out.printf((resultMessage) + "%n", winner.getName(), margin);
+        } else if (team1Score.getRuns() < team2Score.getRuns()) {
             winner = team2;
-            margin = String.format("%s wickets", playerLimit - 1 - team2.getTeamScore().getWickets());
-            System.out.println(String.format(resultMessage, winner.getName(), margin));
+            margin = String.format("%s wickets", playerLimit - 1 - team2Score.getWickets());
+            System.out.printf((resultMessage) + "%n", winner.getName(), margin);
         } else {
             System.out.println("Match tied!!");
         }

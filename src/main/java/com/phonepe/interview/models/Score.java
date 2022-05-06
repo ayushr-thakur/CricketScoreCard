@@ -1,10 +1,10 @@
 package com.phonepe.interview.models;
 
-public class TeamScore {
+public class Score {
     private Integer runs;
     private Integer wickets;
 
-    public TeamScore(Integer runs, Integer wickets) {
+    public Score(Integer runs, Integer wickets) {
         this.runs = runs;
         this.wickets = wickets;
     }
