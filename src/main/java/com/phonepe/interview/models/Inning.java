@@ -26,35 +26,54 @@ public class Inning {
         onNonStrike = temp;
     }
 
+    private Integer getRunsOfExtraBall (String extraBall) {
+        try {
+            return Integer.parseInt(extraBall.substring(0,1));
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+
+    private void handleExtras(Boolean updateBatsman, String deliveryEvent) {
+        int extraRuns = this.getRunsOfExtraBall(deliveryEvent);
+        battingTeam.updateScore(1);
+        extras += 1;
+        if (updateBatsman) {
+            battingTeam.updateScore(extraRuns, onStrike);
+        } else {
+            extras += extraRuns;
+            battingTeam.updateScore(extraRuns);
+        }
+        if (extraRuns % 2 == 1) this.changeStrike();
+    }
+
     private Integer makeInningsProgress(String deliveryEvent) {
-        switch (deliveryEvent) {
-            case "W":
+        try {
+            int runs = Integer.parseInt(deliveryEvent);
+            if (runs > 6) {
+                System.out.println("Invalid delivery score");
+                return 0;
+            }
+            battingTeam.updateScore(runs, onStrike);
+            ballsBowledCount += 1;
+            if (runs % 2 == 1) this.changeStrike();
+            return 1;
+        } catch (Exception ex) {
+            if (deliveryEvent.equals("W")) {
                 battingTeam.dismissPlayer(onStrike);
                 onStrike = this.battingTeam.sendNextBatsman();
                 ballsBowledCount += 1;
                 return 1;
-            case "Wd":
-            case "N":
-                extras += 1;
-                battingTeam.updateScore(1);
+            } else if (deliveryEvent.contains("Wd")) {
+                this.handleExtras(false, deliveryEvent);
                 return 0;
-            case "1":
-            case "3":
-            case "5":
-                battingTeam.updateScore(Integer.valueOf(deliveryEvent), onStrike);
-                this.changeStrike();
-                ballsBowledCount += 1;
-                return 1;
-            case "0":
-            case "2":
-            case "4":
-            case "6":
-                battingTeam.updateScore(Integer.valueOf(deliveryEvent), onStrike);
-                ballsBowledCount += 1;
-                return 1;
-            default:
+            } else if (deliveryEvent.contains("N")) {
+                this.handleExtras(true, deliveryEvent);
+                return 0;
+            } else {
                 System.out.println("Invalid delivery score");
                 return 0;
+            }
         }
     }
 
